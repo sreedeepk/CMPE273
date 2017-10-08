@@ -1,0 +1,16 @@
+{
+  "name": "server1",
+  "version": "1.0.0",
+  "description": "CMP273 lab1 - server1",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.1",
+    "joi": "^11.2.0",
+    "lodash": "^4.17.4"
+  }
+}
