@@ -4,10 +4,12 @@ const Joi = require('joi');
 const express = require('express');
 const _ = require('lodash');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const expressValidation = require('express-validation');
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -35,8 +37,8 @@ app.get(
   (req, res) => {    
     const { valueA, valueB } = req.query;
     const result = _.add(valueA, valueB);
-    console.log('Add =>', valueA, valueB);
-    res.send(200, result);
+    console.log('Add =>', valueA, valueB, result);
+    res.json({res: result});
 });
 
 app.get(
@@ -51,7 +53,7 @@ app.get(
     const { valueA, valueB } = req.query;
     const result = _.subtract(valueA, valueB);
     console.log('SUbtract =>', valueA, valueB);
-    res.send(200, result);
+    res.json({res: result});
 });
 
 app.get(
@@ -66,7 +68,7 @@ app.get(
     const { valueA, valueB } = req.query;
     const result = _.multiply(valueA, valueB);
     console.log('Multiply =>', valueA, valueB);
-    res.send(200, result);
+    res.json({res: result});
 });
 
 app.get(
@@ -79,12 +81,11 @@ app.get(
   }),
   (req, res) => {
     const { valueA, valueB } = req.query;
-    //if (!valueB) res.send(404, 'Cannot divide by Zero!');
     const result = _.divide(valueA, valueB);
     console.log('Divide =>', valueA, valueB);
-    res.send(200, result);
+    res.json({res: result});
 });
       
-app.listen(3000, function () {
-  console.log('Calculator app listening on port 3000!')
+app.listen(5000, function () {
+  console.log('Calculator app listening on port 5000!')
 });
