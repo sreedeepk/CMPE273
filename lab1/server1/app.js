@@ -52,7 +52,7 @@ app.get(
   (req, res) => {
     const { valueA, valueB } = req.query;
     const result = _.subtract(valueA, valueB);
-    console.log('SUbtract =>', valueA, valueB);
+    console.log('Subtract =>', valueA, valueB);
     res.json({res: result});
 });
 
