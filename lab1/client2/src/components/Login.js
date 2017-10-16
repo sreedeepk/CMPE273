@@ -8,13 +8,13 @@ class Login extends Component {
     };
 
     state = {
-        username: '',
+        email: '',
         password: ''
     };
 
     componentWillMount(){
         this.setState({
-            username: '',
+            email: '',
             password: ''
         });
     }
@@ -31,12 +31,12 @@ class Login extends Component {
                             <input
                                 className="form-control"
                                 type="text"
-                                label="Username"
-                                placeholder="Enter Username"
-                                value={this.state.username}
+                                label="Email"
+                                placeholder="Enter Email"
+                                value={this.state.email}
                                 onChange={(event) => {
                                     this.setState({
-                                        username: event.target.value
+                                        email: event.target.value
                                     });
                                 }}
                             />

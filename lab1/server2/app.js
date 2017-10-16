@@ -8,6 +8,7 @@ const expressValidation = require('express-validation');
 const session = require('client-sessions');
 const app = express();
 const fs = require("fs");
+const cors = require('cors');
 
 const multer = require('multer');
 const storage = multer.diskStorage({
@@ -38,10 +39,12 @@ const mysql = require("./routes/mysql");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors());
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
   next();
 });
 
@@ -106,7 +109,10 @@ app.post(
       email: Joi.string(),
       password: Joi.string(),
       first_name: Joi.string(),
-      last_name: Joi.string()
+      last_name: Joi.string(),
+      overview: Joi.string(),
+      work: Joi.string(),
+      interests: Joi.string(),
     }
   }), (req, res) => {
     users.signup(req,res)
@@ -132,6 +138,17 @@ app.post(
     }
   }), (req, res) => {
     users.signout(req,res)
+  }
+);
+
+app.get(
+  '/users/info',
+  requireLogin,
+  expressValidation({
+    body: {
+    }
+  }), (req, res) => {
+    users.info(req,res)
   }
 );
 
@@ -180,6 +197,52 @@ app.post(
     }
   }), (req, res) => {
     groups.create(req,res)
+  }
+);
+
+app.post(
+  '/groups/:id/members',
+  requireLogin,
+  expressValidation({
+    body: {
+      email: Joi.string()
+    }
+  }), (req, res) => {
+    groups.addMembers(req,res)
+  }
+);
+
+app.get(
+  '/groups/:id/members',
+  requireLogin,
+  expressValidation({
+    body: {
+    }
+  }), (req, res) => {
+    groups.showMembers(req,res)
+  }
+);
+
+app.delete(
+  '/groups/:id/members',
+  requireLogin,
+  expressValidation({
+    body: {
+      email: Joi.string()
+    }
+  }), (req, res) => {
+    groups.deleteMembers(req,res)
+  }
+);
+
+app.delete(
+  '/groups/:id',
+  requireLogin,
+  expressValidation({
+    body: {
+    }
+  }), (req, res) => {
+    groups.deleteGroup(req,res)
   }
 );
 

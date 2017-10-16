@@ -10,23 +10,23 @@ class HomePage extends Component {
     state = {
         isLoggedIn: false,
         message: '',
-        username: ''
+        email: ''
     };
 
     handleSubmit = (userdata) => {
         API.doLogin(userdata)
             .then((status) => {
-                if (status === 201) {
+                if (status === 200) {
                     this.setState({
                         isLoggedIn: true,
                         message: "Welcome to my App..!!",
-                        username: userdata.username
+                        email: userdata.email
                     });
                     this.props.history.push("/welcome");
                 } else if (status === 401) {
                     this.setState({
                         isLoggedIn: false,
-                        message: "Wrong username or password. Try again..!!"
+                        message: "Wrong email or password. Try again..!!"
                     });
                 }
             });
@@ -34,7 +34,7 @@ class HomePage extends Component {
 
     handleLogout = () => {
         console.log('logout called');
-        API.logout()
+        API.signout()
             .then((status) => {
                 if(status === 200){
                     this.setState({
@@ -67,7 +67,7 @@ class HomePage extends Component {
                     </div>
                 )}/>
                 <Route exact path="/welcome" render={() => (
-                    <Welcome handleLogout={this.handleLogout} username={this.state.username}/>
+                    <Welcome handleLogout={this.handleLogout} email={this.state.email}/>
                 )}/>
             </div>
         );
