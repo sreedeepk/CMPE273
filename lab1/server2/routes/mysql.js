@@ -3,7 +3,7 @@ const mysql = require('mysql');
 const host = 'localhost'
 const user = 'root'
 const password = 'root'
-const database = 'demo273'
+const database = 'cmpe273'
 const port = 3306
 
 //Put your mysql configuration settings - user, password, database and port
@@ -67,3 +67,5 @@ function fetchDataFromPool(callback,sqlQuery){
 exports.fetchData=fetchData;
 exports.fetchDataFromPool=fetchDataFromPool;
 exports.escape=mysql.escape;
+exports.pool=pool;
+exports.getConnection=getConnection;
