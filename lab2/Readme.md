@@ -1,50 +1,50 @@
-# Project 1
+# Project
 
-Project 1 is about creating a client and a server for Calculator app
+Demonstrates dropbox application using kafka to send messages
 
-## Client 1
+## Client
 
-Client 1 can be started by running the following commands
+Client can be started by running the following commands
 
 ```
-cd client1
+cd client
 npm install 
 npm start
 ```
 
 
-## Server 1
+## Server
 
-Server 1 can be started by running the following commands
+Server can be started by running the following commands
 
 ```
-cd server1
+cd server
 npm install 
 npm start
 ```
 
-# Project 2
+## Kafka Server
 
-Project 2 is about creating a client and a server for Dropbox app
-
-
-## Client 2
-
-Client 2 can be started by running the following commands
+Server can be started by running the following commands
 
 ```
-cd client2
+cd kafka-server
 npm install 
 npm start
 ```
 
-
-## Server 2
-
-Server 2 can be started by running the following commands
+### Topic creation commands
 
 ```
-cd server2
-npm install 
-npm start
+kafka-console-producer --broker-list localhost:9092 --topic login_topic
+kafka-console-producer --broker-list localhost:9092 --topic signup_topic
+kafka-console-producer --broker-list localhost:9092 --topic getfiles_topic
+kafka-console-producer --broker-list localhost:9092 --topic getusersinfo_topic
+kafka-console-producer --broker-list localhost:9092 --topic uploadfile_topic
+kafka-console-producer --broker-list localhost:9092 --topic getfile_topic
+kafka-console-producer --broker-list localhost:9092 --topic creategroups_topic
+kafka-console-producer --broker-list localhost:9092 --topic addmembers_topic
+kafka-console-producer --broker-list localhost:9092 --topic showmembers_topic
+kafka-console-producer --broker-list localhost:9092 --topic deletemembers_topic
+kafka-console-producer --broker-list localhost:9092 --topic deletegroups_topic
 ```
