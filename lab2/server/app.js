@@ -16,6 +16,28 @@ var kafka = require('./routes/kafka/client');
 
 var app = express();
 
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    var newDestination = 'data/' + req.user.user_id;
+    var stat = null;
+    try {
+        stat = fs.statSync(newDestination);
+    } catch (err) {
+        fs.mkdirSync(newDestination);
+    }
+    if (stat && !stat.isDirectory()) {
+        throw new Error('Directory cannot be created because an inode of a different type exists at "' + dest + '"');
+    }       
+    cb(null, newDestination);
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + '-' + file.originalname)
+  }
+})
+
+const multerupload = multer({ storage: storage })
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -51,50 +73,6 @@ app.use(passport.initialize());
 app.use('/', routes);
 // app.use('/users', users);
 
-app.post('/users/signout', function(req,res) {
-    console.log(req.session.user);
-    req.session.destroy();
-    console.log('Session Destroyed');
-    res.status(200).send();
-});
-
-app.post('/users/signin', function(req, res) {
-    passport.authenticate('login', function(err, user) {
-        if(err) {
-            res.status(500).send();
-        }
-
-        if(!user) {
-            res.status(401).send();
-        }
-        else {
-            req.session.user = user.results.username;
-            console.log(user);
-            console.log(req.session.user);
-            console.log("session initilized");
-
-
-
-
-            return res.status(201).send({userdata: user.results});
-        }
-    })(req, res);
-});
-
-app.get('/files/:username',function(req,res){
-    kafka.make_request('getfiles_topic',{"username":req.params.username}, function(err,results){
-        console.log('in result');
-        console.log(results);
-        if(err) {
-            res.status(500).send();
-        }
-        else{
-            res.status(200).send({"results":results});
-        }
-    });
-});
-
-
 app.post('/users/signup', function(req, res) {
     var  myobj = { "username" :req.body.username ,"password" : req.body.password,"firstname":req.body.firstname,"lastname":req.body.lastname,"data":
         [
@@ -123,10 +101,167 @@ app.post('/users/signup', function(req, res) {
     });
 });
 
+app.post('/users/signin', function(req, res) {
+    passport.authenticate('login', function(err, user) {
+        if(err) {
+            res.status(500).send();
+        }
+
+        if(!user) {
+            res.status(401).send();
+        }
+        else {
+            req.session.user = user.results.username;
+            console.log(user);
+            console.log(req.session.user);
+            console.log("session initilized");
 
 
 
 
+            return res.status(201).send({userdata: user.results});
+        }
+    })(req, res);
+});
 
+app.post('/users/signout', function(req,res) {
+    console.log(req.session.user);
+    req.session.destroy();
+    console.log('Session Destroyed');
+    res.status(200).send();
+});
+
+app.get('/users/info', function (req, res) {
+      kafka.make_request('getusersinfo_topic',{"req":req}, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if(err) {
+            res.status(500).send();
+        }
+        else{
+            res.status(200).send({"results":results});
+        }
+     });
+    }
+  );
+  
+  // Files
+  app.post('/files/upload', multerupload.any(),
+    function(req, res) {
+        kafka.make_request('uploadfile_topic',{"req":req}, function(err,results){
+            console.log('in result');
+            console.log(results);
+            if(err) {
+                res.status(500).send();
+            }
+            else{
+                res.status(200).send({"results":results});
+            }
+        });
+    }
+  );
+  
+  app.get('/files/:username',function(req,res){
+    kafka.make_request('getfiles_topic',{"username":req.params.username}, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if(err) {
+            res.status(500).send();
+        }
+        else{
+            res.status(200).send({"results":results});
+        }
+    });
+});
+  
+  app.get('/files/:username/:id', function(req, res) {
+        kafka.make_request('getfile_topic',{"req":req, "username":req.params.username, "id": req.params.id}, function(err,results){
+            console.log('in result');
+            console.log(results);
+            if(err) {
+                res.status(500).send();
+            }
+            else{
+                res.status(200).send({"results":results});
+            }
+        });
+    }
+  );
+  
+  // Groups
+  app.post(
+    '/groups/create',function(req, res) {
+        kafka.make_request('creategroups_topic',{"req":req}, function(err,results){
+            console.log('in result');
+            console.log(results);
+            if(err) {
+                res.status(500).send();
+            }
+            else{
+                res.status(200).send({"results":results});
+            }
+        });
+    }
+  );
+  
+  app.post(
+    '/groups/:id/members',function(req, res) {
+        kafka.make_request('addmembers_topic',{"req":req}, function(err,results){
+            console.log('in result');
+            console.log(results);
+            if(err) {
+                res.status(500).send();
+            }
+            else{
+                res.status(200).send({"results":results});
+            }
+        });
+    }
+  );
+  
+  app.get(
+    '/groups/:id/members',function(req, res) {
+        kafka.make_request('showmembers_topic',{"req":req}, function(err,results){
+            console.log('in result');
+            console.log(results);
+            if(err) {
+                res.status(500).send();
+            }
+            else{
+                res.status(200).send({"results":results});
+            }
+        });
+    }
+  );
+  
+  app.delete(
+    '/groups/:id/members', function (req, res) {
+        kafka.make_request('deletemembers_topic',{"req":req}, function(err,results){
+            console.log('in result');
+            console.log(results);
+            if(err) {
+                res.status(500).send();
+            }
+            else{
+                res.status(200).send({"results":results});
+            }
+        });
+    }
+  );
+  
+  app.delete(
+    '/groups/:id', function(req, res) {
+        kafka.make_request('deletegroups_topic',{"req":req}, function(err,results){
+            console.log('in result');
+            console.log(results);
+            if(err) {
+                res.status(500).send();
+            }
+            else{
+                res.status(200).send({"results":results});
+            }
+        });
+    }
+  );
 
 module.exports = app;
