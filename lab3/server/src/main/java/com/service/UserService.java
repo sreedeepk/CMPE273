@@ -11,33 +11,37 @@ import java.util.List;
 
 @Service
 public class UserService {
-    @Autowired
     private UserRepository userRepository;
 
-    public Iterable<Users> getAllUsers(){
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public Iterable<Users> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public void addUser(Users user){
+    public void addUser(Users user) {
         userRepository.save(user);
     }
 
-    public List<Users> signup(String email, String password){
-        return userRepository.findByEmailAndPassword(email,password);
+    public List<Users> signup(String email, String password) {
+        return userRepository.findByEmailAndPassword(email, password);
     }
 
-    public List<Users> login(String email, String password){
-        return userRepository.findByEmailAndPassword(email,password);
+    public List<Users> login(String email, String password) {
+        return userRepository.findByEmailAndPassword(email, password);
     }
 
     public List<Users> info(String email) {
         return userRepository.findByEmail(email);
     }
 
-    public List<Files> getFiles(String email){
+    public List<Files> getFiles(String email) {
         List<Users> users = userRepository.findByEmail(email);
         List<Files> files = new ArrayList<Files>();
-        for(Users user: users) {
+        for (Users user : users) {
             files = user.getFiles();
         }
         return files;

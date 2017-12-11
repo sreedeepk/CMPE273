@@ -1,13 +1,15 @@
 package com.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity // This tells Hibernate to make a table out of this class
 public class Users {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name="user_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "user_id")
     private Integer id;
 
     private String firstName;
@@ -26,6 +28,19 @@ public class Users {
 
     @OneToMany(mappedBy = "user")
     private List<Files> files;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "group_members", joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name = "group_id")})
+    @JsonIgnore
+    private List<Groups> groups;
+
+    public List<Groups> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<Groups> groups) {
+        this.groups = groups;
+    }
 
     public String getOverview() {
         return overview;
