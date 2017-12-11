@@ -6,7 +6,6 @@ import com.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +28,10 @@ public class UserService {
 
     public List<Users> login(String email, String password){
         return userRepository.findByEmailAndPassword(email,password);
+    }
+
+    public List<Users> info(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public List<Files> getFiles(String email){

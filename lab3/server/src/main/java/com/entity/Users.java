@@ -7,6 +7,7 @@ import java.util.List;
 public class Users {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name="user_id")
     private Integer id;
 
     private String firstName;
@@ -17,8 +18,38 @@ public class Users {
 
     private String password;
 
+    private String overview;
+
+    private String work;
+
+    private String interests;
+
     @OneToMany(mappedBy = "user")
     private List<Files> files;
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public String getWork() {
+        return work;
+    }
+
+    public void setWork(String work) {
+        this.work = work;
+    }
+
+    public String getInterests() {
+        return interests;
+    }
+
+    public void setInterests(String interests) {
+        this.interests = interests;
+    }
 
     public List<Files> getFiles() {
         return files;
